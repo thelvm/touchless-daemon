@@ -1,0 +1,10 @@
+bin/
+lib/
+obj/
+*.cbp
+*.depend
+*.layout
+include/Leap.h
+include/LeapMath.h
+src/Leap.i
+
