@@ -1,5 +1,6 @@
 #include "gesture_parser.h"
 #include <stdlib.h>
+#include <math.h>
 
 template <class T>
 DataHistory<T>::DataHistory(size_t capacity)
@@ -14,11 +15,11 @@ GestureParser::GestureParser()
 {
 }
 
-uint32_t GestureParser::Parse(const Leap::Frame frame)
+Hand_discrete GestureParser::Parse_static(const Leap::Frame frame)
 {
     Leap::Hand leftHand, rightHand;
 
-    uint32_t gestures = 0;
+    Hand_discrete hand_discrete;
 
     if (!frame.hands().isEmpty())
     {
@@ -26,15 +27,58 @@ uint32_t GestureParser::Parse(const Leap::Frame frame)
         {
             Leap::Hand hand = frame.hands()[i];
 
-            if ( abs(hand.palmNormal().y) > 0.9 )
+            // Identifing presence of hand
+            if (hand.isLeft())
             {
-                gestures += ( (hand.isLeft()) ? GESTURE_BASIC_L_HORIZONTAL : GESTURE_BASIC_R_HORIZONTAL);
+                hand_discrete.l_hand = 1;
             }
-            if ( abs(hand.palmNormal().y) < 0.2 )
+            else
             {
-                gestures += ( (hand.isLeft()) ? GESTURE_BASIC_L_VERTICAL : GESTURE_BASIC_R_VERTICAL);
+                hand_discrete.r_hand = 1;
+            }
+
+            // Roll discretization
+            {
+                float roll = hand.palmNormal().roll();
+                unsigned int d_roll = (unsigned int)round((roll + M_PI) / M_PI_4);
+                if (hand.isLeft())
+                {
+                    hand_discrete.l_roll = d_roll;
+                }
+                else
+                {
+                    hand_discrete.r_roll = d_roll;
+                }
+            }
+
+            // Pitch discretization
+            {
+                float pitch = hand.direction().pitch();
+                unsigned int d_pitch = (unsigned int)round(((pitch + M_PI) / M_PI_4) - 4);
+                if (hand.isLeft())
+                {
+                    hand_discrete.l_pitch = d_pitch;
+                }
+                else
+                {
+                    hand_discrete.r_pitch = d_pitch;
+                }
+            }
+
+            // Yaw discretization
+            {
+                float yaw = hand.direction().yaw();
+                unsigned int d_yaw = (unsigned int)round(((yaw + M_PI) / M_PI_4) - 4);
+                if (hand.isLeft())
+                {
+                    hand_discrete.l_yaw = d_yaw;
+                }
+                else
+                {
+                    hand_discrete.r_yaw = d_yaw;
+                }
             }
         }
     }
-    return gestures;
+    return hand_discrete;
 }

@@ -4,25 +4,24 @@
 
 GestureVisualizer::GestureVisualizer()
 {
-    this->previousGesture = 0;
 }
 
-void GestureVisualizer::show(uint32_t gesture)
+void GestureVisualizer::show_static(Hand_discrete hd)
 {
-    if (gesture != this->previousGesture)
+    if (!(hd == this->previousStaticGesture))
     {
-        if ( gesture == GESTURE_PARALLEL_HORIZONTAL )
+        if (hd.l_hand || hd.r_hand)
         {
-            std::cout << "_ _" << std::endl;
+            if (hd.l_hand)
+            {
+                printf("Left: (%d %d %d) ", hd.l_roll, hd.l_yaw, hd.l_pitch);
+            }
+
+            if (hd.r_hand)
+            {
+                printf("Right: (%d %d %d) ", hd.r_roll, hd.r_yaw, hd.r_pitch);
+            }
+            printf("\n");
         }
-        else if ( gesture == GESTURE_PARALLEL_VERTICAL )
-        {
-            std::cout << "| |" << std::endl;
-        }
-        else
-        {
-            std::cout << std::endl;
-        }
-        this->previousGesture = gesture;
     }
 }

@@ -32,7 +32,7 @@ class GestureParser
 public:
     GestureParser();
 
-    uint32_t Parse(const Leap::Frame frame);
+    Hand_discrete Parse_static(const Leap::Frame frame);
 };
 
 #endif // GESTURE_PARSER_H_INCLUDED

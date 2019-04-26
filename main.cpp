@@ -16,13 +16,12 @@ public:
 
 void SampleListener::onConnect(const Leap::Controller& controller) {
     std::cout << "Connected" << std::endl;
-    controller.enableGesture(Leap::Gesture::TYPE_SWIPE);
 }
 
 void SampleListener::onFrame(const Leap::Controller& controller) {
     const Leap::Frame frame = controller.frame();
-    uint32_t g = g_parser->Parse(frame);
-    g_vis->show(g);
+    Hand_discrete g = g_parser->Parse_static(frame);
+    g_vis->show_static(g);
 }
 
 int main(int argc, char** argv)

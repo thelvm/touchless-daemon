@@ -2,17 +2,18 @@
 #define GESTUREVISUALIZER_H
 
 #include <stdint.h>
+#include "gestures.h"
 
 class GestureVisualizer
 {
     public:
         GestureVisualizer();
-        void show(uint32_t gesture);
+        void show_static(Hand_discrete hand_discrete);
 
     protected:
 
     private:
-        uint32_t previousGesture;
+        Hand_discrete previousStaticGesture;
 };
 
 #endif // GESTUREVISUALIZER_H
