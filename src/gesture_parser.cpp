@@ -40,7 +40,7 @@ Hand_discrete GestureParser::Parse_static(const Leap::Frame frame)
             // Roll discretization
             {
                 float roll = hand.palmNormal().roll();
-                unsigned int d_roll = (unsigned int)round((roll + M_PI) / M_PI_4);
+                unsigned int d_roll = (unsigned int)round(((roll + M_PI) / M_PI_4) - 4);
                 if (hand.isLeft())
                 {
                     hand_discrete.l_roll = d_roll;
