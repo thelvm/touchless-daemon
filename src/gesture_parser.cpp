@@ -17,7 +17,7 @@ GestureParser::GestureParser()
 
 Hand_discrete GestureParser::Parse_static(const Leap::Frame frame)
 {
-    Leap::Hand leftHand, rightHand;
+
 
     Hand_discrete hand_discrete;
 
@@ -32,7 +32,7 @@ Hand_discrete GestureParser::Parse_static(const Leap::Frame frame)
             {
                 hand_discrete.l_hand = 1;
             }
-            else
+            if (hand.isRight())
             {
                 hand_discrete.r_hand = 1;
             }
@@ -76,6 +76,69 @@ Hand_discrete GestureParser::Parse_static(const Leap::Frame frame)
                 else
                 {
                     hand_discrete.r_yaw = d_yaw;
+                }
+            }
+
+            // fingers
+            {
+                for (int i = 0; i < hand.fingers().count(); i++)
+                {
+                    Leap::Finger finger = hand.fingers()[i];
+
+                    switch(finger.type()){
+                        case Leap::Finger::TYPE_INDEX:
+                            if (hand.isLeft())
+                            {
+                                hand_discrete.l_index = finger.isExtended();
+                            }
+                            else
+                            {
+                                hand_discrete.r_index = finger.isExtended();
+                            }
+                            break;
+                        case Leap::Finger::TYPE_MIDDLE:
+                            if (hand.isLeft())
+                            {
+                                hand_discrete.l_middle = finger.isExtended();
+                            }
+                            else
+                            {
+                                hand_discrete.r_middle = finger.isExtended();
+                            }
+                            break;
+                        case Leap::Finger::TYPE_RING:
+                            if (hand.isLeft())
+                            {
+                                hand_discrete.l_ring = finger.isExtended();
+                            }
+                            else
+                            {
+                                hand_discrete.r_ring = finger.isExtended();
+                            }
+                            break;
+                        case Leap::Finger::TYPE_PINKY:
+                            if (hand.isLeft())
+                            {
+                                hand_discrete.l_pinky = finger.isExtended();
+                            }
+                            else
+                            {
+                                hand_discrete.r_pinky = finger.isExtended();
+                            }
+                            break;
+                        case Leap::Finger::TYPE_THUMB:
+                            if (hand.isLeft())
+                            {
+                                hand_discrete.l_thumb = finger.isExtended();
+                            }
+                            else
+                            {
+                                hand_discrete.r_thumb = finger.isExtended();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
