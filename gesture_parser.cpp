@@ -2,24 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-template <class T>
-data_history<T>::data_history(size_t capacity)
-{
-    data_history::size = capacity;
-    data_history::history = (T*)malloc(capacity * sizeof(T*));
-    data_history::head_pos = 0;
-}
-
-template<class T>
-size_t data_history<T>::getSize() const {
-    return size;
-}
-
-template<class T>
-void data_history<T>::setSize(size_t mSize) {
-    data_history::size = mSize;
-}
-
 
 gesture_parser::gesture_parser()
 = default;
