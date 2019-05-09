@@ -1,4 +1,5 @@
 #include <math.h>
+#include <cstdio>
 #include "gestures.h"
 
 hand_discrete::hand_discrete()
@@ -187,4 +188,33 @@ unsigned int hand_discrete::discretize_angle(double angle) {
     return (unsigned int)round((( angle + M_PI ) / M_PI_4) - 4);
 }
 
+gesture::gesture(char *name, unsigned int timeout) {
+    this->name = name;
+    nbr_tests = 0;
+    current_keyframe = 0;
+    this->timeout = timeout;
+}
 
+void gesture::add_keyframe(hand_discrete handDiscrete) {
+    keyframes.push_back(handDiscrete);
+}
+
+bool gesture::test(hand_discrete handDiscrete) {
+    if (keyframes.empty()) {
+        printf("%s has no keyframes!", name);
+        return false;
+    }
+    if(handDiscrete == keyframes[current_keyframe]) {
+        current_keyframe++;
+        nbr_tests = 0;
+        return false;
+    }
+    if (current_keyframe >= keyframes.size()) {
+        return true;
+    }
+    nbr_tests++;
+    if(nbr_tests > timeout) {
+        current_keyframe = 0;
+    }
+    return false;
+}

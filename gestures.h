@@ -1,6 +1,8 @@
 #ifndef GESTURES_H_INCLUDED
 #define GESTURES_H_INCLUDED
 
+#include <vector>
+
 constexpr unsigned int  bits_per_hand_present = 1,
                         bits_per_finger       = 1,
                         bits_per_axis         = 3;
@@ -110,6 +112,19 @@ public:
 
 };
 
-
+class gesture
+{
+private:
+    unsigned int nbr_tests;
+    unsigned int current_keyframe;
+    std::vector<hand_discrete> keyframes;
+public:
+    char* name;
+    unsigned int timeout;
+    explicit gesture(char *name, unsigned int timeout);
+    void add_keyframe(hand_discrete handDiscrete);
+    /* Returns true when the gesture is detected */
+    bool test(hand_discrete);
+};
 
 #endif // GESTURES_H_INCLUDED
