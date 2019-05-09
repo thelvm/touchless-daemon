@@ -4,7 +4,13 @@ obj/
 *.cbp
 *.depend
 *.layout
-include/Leap.h
-include/LeapMath.h
-src/Leap.i
+Leap.i
+Leap.h
+libLeap.so
+LeapMath.h
+build/
+.Idea/
+.idea/
+.vscode/
+cmake-build-debug/
 

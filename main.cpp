@@ -3,15 +3,15 @@
 #include <bitset>
 #include "Leap.h"
 #include "gesture_parser.h"
-#include "GestureVisualizer.h"
+#include "gesture_visualizer.h"
 
-GestureParser* g_parser;
+gesture_parser* g_parser;
 GestureVisualizer* g_vis;
 
 class SampleListener : public Leap::Listener {
 public:
-    virtual void onConnect(const Leap::Controller&);
-    virtual void onFrame(const Leap::Controller&);
+    void onConnect(const Leap::Controller&) override;
+    void onFrame(const Leap::Controller&) override;
 };
 
 void SampleListener::onConnect(const Leap::Controller& controller) {
@@ -20,7 +20,7 @@ void SampleListener::onConnect(const Leap::Controller& controller) {
 
 void SampleListener::onFrame(const Leap::Controller& controller) {
     const Leap::Frame frame = controller.frame();
-    Hand_discrete g = g_parser->Parse_static(frame);
+    hand_discrete * g = gesture_parser::Parse_static(frame);
     g_vis->show_static(g);
 }
 
@@ -29,7 +29,7 @@ int main(int argc, char** argv)
     SampleListener listener;
     Leap::Controller controller;
 
-    g_parser = new GestureParser();
+    g_parser = new gesture_parser();
     g_vis = new GestureVisualizer();
 
     std::cout << "Connecting to Leap Sensor..." << std::endl;

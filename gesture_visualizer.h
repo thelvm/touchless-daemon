@@ -8,12 +8,12 @@ class GestureVisualizer
 {
     public:
         GestureVisualizer();
-        void show_static(Hand_discrete hand_discrete);
+        void show_static(hand_discrete * hand_discrete);
 
     protected:
 
     private:
-        Hand_discrete previousStaticGesture;
+        hand_discrete * previousStaticGesture;
 };
 
 #endif // GESTUREVISUALIZER_H
