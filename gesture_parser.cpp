@@ -3,10 +3,7 @@
 #include <math.h>
 
 
-gesture_parser::gesture_parser()
-= default;
-
-hand_discrete * gesture_parser::Parse_static(const Leap::Frame& frame)
+hand_discrete * gesture_parser::parse_static(const Leap::Frame &frame)
 {
 
 
@@ -134,3 +131,21 @@ hand_discrete * gesture_parser::Parse_static(const Leap::Frame& frame)
     }
     return pHandDiscrete;
 }
+
+char * gesture_parser::parse(const Leap::Frame &frame) {
+    hand_discrete * handDiscrete = parse_static(frame);
+    if(!gestures.empty()) {
+        for (auto & gesture : gestures) {
+            if(gesture.test(handDiscrete)) {
+                return gesture.name;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void gesture_parser::add_gesture(const gesture& new_gesture) {
+    gestures.push_back(new_gesture);
+}
+
+

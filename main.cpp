@@ -20,7 +20,7 @@ void SampleListener::onConnect(const Leap::Controller& controller) {
 
 void SampleListener::onFrame(const Leap::Controller& controller) {
     const Leap::Frame frame = controller.frame();
-    hand_discrete * g = gesture_parser::Parse_static(frame);
+    hand_discrete * g = gesture_parser::parse_static(frame);
     g_vis->show_static(g);
 }
 

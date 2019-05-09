@@ -199,12 +199,12 @@ void gesture::add_keyframe(hand_discrete handDiscrete) {
     keyframes.push_back(handDiscrete);
 }
 
-bool gesture::test(hand_discrete handDiscrete) {
+bool gesture::test(hand_discrete *handDiscrete) {
     if (keyframes.empty()) {
         printf("%s has no keyframes!", name);
         return false;
     }
-    if(handDiscrete == keyframes[current_keyframe]) {
+    if(*handDiscrete == keyframes[current_keyframe]) {
         current_keyframe++;
         nbr_tests = 0;
         return false;

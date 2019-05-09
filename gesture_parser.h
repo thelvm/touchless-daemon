@@ -5,17 +5,17 @@
 #include "gestures.h"
 #include "data_history.h"
 #include <malloc.h>
+#include <vector>
 
 
 class gesture_parser
 {
-    data_history<uint32_t> gesture_history;
+    std::vector<gesture> gestures;
 
 public:
-    gesture_parser();
-
-    static hand_discrete * Parse_static(const Leap::Frame& frame);
-
+    void add_gesture(const gesture& new_gesture);
+    static hand_discrete * parse_static(const Leap::Frame &frame);
+    char * parse(const Leap::Frame &frame);
 };
 
 #endif // GESTURE_PARSER_H_INCLUDED

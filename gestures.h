@@ -124,7 +124,7 @@ public:
     explicit gesture(char *name, unsigned int timeout);
     void add_keyframe(hand_discrete handDiscrete);
     /* Returns true when the gesture is detected */
-    bool test(hand_discrete);
+    bool test(hand_discrete *handDiscrete);
 };
 
 #endif // GESTURES_H_INCLUDED
