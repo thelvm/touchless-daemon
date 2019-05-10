@@ -4,11 +4,11 @@
 #include <stdint.h>
 #include "gestures.h"
 
-class GestureVisualizer
+class gesture_visualizer
 {
     public:
-        GestureVisualizer();
-        void show_static(hand_discrete * hand_discrete);
+        gesture_visualizer();
+        static void show_static(hand_discrete * hand_discrete);
 
     protected:
 

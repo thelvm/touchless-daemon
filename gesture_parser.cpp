@@ -2,29 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-template <class T>
-data_history<T>::data_history(size_t capacity)
-{
-    data_history::size = capacity;
-    data_history::history = (T*)malloc(capacity * sizeof(T*));
-    data_history::head_pos = 0;
-}
 
-template<class T>
-size_t data_history<T>::getSize() const {
-    return size;
-}
-
-template<class T>
-void data_history<T>::setSize(size_t mSize) {
-    data_history::size = mSize;
-}
-
-
-gesture_parser::gesture_parser()
-= default;
-
-hand_discrete * gesture_parser::Parse_static(const Leap::Frame& frame)
+hand_discrete * gesture_parser::parse_static(const Leap::Frame &frame)
 {
 
 
@@ -50,39 +29,35 @@ hand_discrete * gesture_parser::Parse_static(const Leap::Frame& frame)
             {
                 if (hand.isLeft())
                 {
-                    pHandDiscrete->set_l_roll(hand.direction().roll());
+                    pHandDiscrete->set_l_roll(hand.palmNormal().roll());
                 }
                 else
                 {
-                    pHandDiscrete->set_r_roll(hand.direction().roll());
+                    pHandDiscrete->set_r_roll(hand.palmNormal().roll());
                 }
             }
 
             // Pitch discretization
             {
-                float pitch = hand.direction().pitch();
-                auto d_pitch = (unsigned int)round(((pitch + M_PI) / M_PI_4) - 4);
                 if (hand.isLeft())
                 {
-                    pHandDiscrete->set_l_pitch(d_pitch);
+                    pHandDiscrete->set_l_pitch(hand.direction().pitch());
                 }
                 else
                 {
-                    pHandDiscrete->set_r_pitch(d_pitch);
+                    pHandDiscrete->set_r_pitch(hand.direction().pitch());
                 }
             }
 
             // Yaw discretization
             {
-                float yaw = hand.direction().yaw();
-                auto d_yaw = (unsigned int)round(((yaw + M_PI) / M_PI_4) - 4);
                 if (hand.isLeft())
                 {
-                    pHandDiscrete->set_l_yaw(d_yaw);
+                    pHandDiscrete->set_l_yaw(hand.direction().yaw());
                 }
                 else
                 {
-                    pHandDiscrete->set_r_yaw(d_yaw);
+                    pHandDiscrete->set_r_yaw(hand.direction().yaw());
                 }
             }
 
@@ -152,3 +127,21 @@ hand_discrete * gesture_parser::Parse_static(const Leap::Frame& frame)
     }
     return pHandDiscrete;
 }
+
+const char * gesture_parser::parse(const Leap::Frame &frame) {
+    hand_discrete * handDiscrete = parse_static(frame);
+    if(!gestures.empty()) {
+        for (auto & gesture : gestures) {
+            if(gesture->test(handDiscrete)) {
+                return gesture->name;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void gesture_parser::add_gesture(gesture *new_gesture) {
+    gestures.push_back(new_gesture);
+}
+
+

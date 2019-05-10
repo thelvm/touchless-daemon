@@ -2,15 +2,13 @@
 #include "gestures.h"
 #include <iostream>
 
-GestureVisualizer::GestureVisualizer()
+gesture_visualizer::gesture_visualizer()
 {
     this->previousStaticGesture = new hand_discrete;
 }
 
-void GestureVisualizer::show_static(hand_discrete * hd)
+void gesture_visualizer::show_static(hand_discrete * hd)
 {
-    if (*hd != *this->previousStaticGesture)
-    {
         if (hd->get_l_hand_present() || hd->get_r_hand_present())
         {
             if (hd->get_l_hand_present())
@@ -44,6 +42,5 @@ void GestureVisualizer::show_static(hand_discrete * hd)
         {
             printf("-\n");
         }
-    }
-    this->previousStaticGesture = hd;
+
 }
