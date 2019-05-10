@@ -29,39 +29,35 @@ hand_discrete * gesture_parser::parse_static(const Leap::Frame &frame)
             {
                 if (hand.isLeft())
                 {
-                    pHandDiscrete->set_l_roll(hand.direction().roll());
+                    pHandDiscrete->set_l_roll(hand.palmNormal().roll());
                 }
                 else
                 {
-                    pHandDiscrete->set_r_roll(hand.direction().roll());
+                    pHandDiscrete->set_r_roll(hand.palmNormal().roll());
                 }
             }
 
             // Pitch discretization
             {
-                float pitch = hand.direction().pitch();
-                auto d_pitch = (unsigned int)round(((pitch + M_PI) / M_PI_4) - 4);
                 if (hand.isLeft())
                 {
-                    pHandDiscrete->set_l_pitch(d_pitch);
+                    pHandDiscrete->set_l_pitch(hand.direction().pitch());
                 }
                 else
                 {
-                    pHandDiscrete->set_r_pitch(d_pitch);
+                    pHandDiscrete->set_r_pitch(hand.direction().pitch());
                 }
             }
 
             // Yaw discretization
             {
-                float yaw = hand.direction().yaw();
-                auto d_yaw = (unsigned int)round(((yaw + M_PI) / M_PI_4) - 4);
                 if (hand.isLeft())
                 {
-                    pHandDiscrete->set_l_yaw(d_yaw);
+                    pHandDiscrete->set_l_yaw(hand.direction().yaw());
                 }
                 else
                 {
-                    pHandDiscrete->set_r_yaw(d_yaw);
+                    pHandDiscrete->set_r_yaw(hand.direction().yaw());
                 }
             }
 
@@ -132,19 +128,19 @@ hand_discrete * gesture_parser::parse_static(const Leap::Frame &frame)
     return pHandDiscrete;
 }
 
-char * gesture_parser::parse(const Leap::Frame &frame) {
+const char * gesture_parser::parse(const Leap::Frame &frame) {
     hand_discrete * handDiscrete = parse_static(frame);
     if(!gestures.empty()) {
         for (auto & gesture : gestures) {
-            if(gesture.test(handDiscrete)) {
-                return gesture.name;
+            if(gesture->test(handDiscrete)) {
+                return gesture->name;
             }
         }
     }
     return nullptr;
 }
 
-void gesture_parser::add_gesture(const gesture& new_gesture) {
+void gesture_parser::add_gesture(gesture *new_gesture) {
     gestures.push_back(new_gesture);
 }
 

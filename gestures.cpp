@@ -1,6 +1,7 @@
 #include <math.h>
 #include <cstdio>
 #include "gestures.h"
+#include "gesture_visualizer.h"
 
 hand_discrete::hand_discrete()
 {
@@ -185,10 +186,59 @@ void hand_discrete::set_r_yaw(double yaw) {
 }
 
 unsigned int hand_discrete::discretize_angle(double angle) {
-    return (unsigned int)round((( angle + M_PI ) / M_PI_4) - 4);
+    unsigned int d_angle = (unsigned int)round(((angle + M_PI) / M_PI_4)) - 4;
+    return d_angle;
 }
 
-gesture::gesture(char *name, unsigned int timeout) {
+bool hand_discrete::get_l_open() const {
+    return handBits.l_thumb  &&
+           handBits.l_index  &&
+           handBits.l_middle &&
+           handBits.l_ring   &&
+           handBits.l_pinky;
+}
+
+bool hand_discrete::get_r_open() const {
+    return handBits.r_thumb  &&
+           handBits.r_index  &&
+           handBits.r_middle &&
+           handBits.r_ring   &&
+           handBits.r_pinky;
+}
+
+void hand_discrete::set_l_open() {
+    handBits.l_thumb  = 1;
+    handBits.l_index  = 1;
+    handBits.l_middle = 1;
+    handBits.l_ring   = 1;
+    handBits.l_pinky  = 1;
+}
+
+void hand_discrete::set_l_closed() {
+    handBits.l_thumb  = 0;
+    handBits.l_index  = 0;
+    handBits.l_middle = 0;
+    handBits.l_ring   = 0;
+    handBits.l_pinky  = 0;
+}
+
+void hand_discrete::set_r_open() {
+    handBits.r_thumb  = 1;
+    handBits.r_index  = 1;
+    handBits.r_middle = 1;
+    handBits.r_ring   = 1;
+    handBits.r_pinky  = 1;
+}
+
+void hand_discrete::set_r_closed() {
+    handBits.r_thumb  = 0;
+    handBits.r_index  = 0;
+    handBits.r_middle = 0;
+    handBits.r_ring   = 0;
+    handBits.r_pinky  = 0;
+}
+
+gesture::gesture(const char *name, unsigned int timeout) {
     this->name = name;
     nbr_tests = 0;
     current_keyframe = 0;
@@ -204,12 +254,16 @@ bool gesture::test(hand_discrete *handDiscrete) {
         printf("%s has no keyframes!", name);
         return false;
     }
+    /*gesture_visualizer::show_static(handDiscrete);
+    gesture_visualizer::show_static(&keyframes[current_keyframe]);
+    printf("\n");*/
     if(*handDiscrete == keyframes[current_keyframe]) {
         current_keyframe++;
         nbr_tests = 0;
         return false;
     }
     if (current_keyframe >= keyframes.size()) {
+        current_keyframe = 0;
         return true;
     }
     nbr_tests++;

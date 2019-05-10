@@ -74,6 +74,10 @@ public:
     unsigned int get_l_yaw() const;
     void set_l_yaw(double yaw);
 
+    bool get_l_open() const;
+    void set_l_open();
+    void set_l_closed();
+
     // Is the right hand present
     unsigned int get_r_hand_present() const;
     void set_r_hand_present(unsigned int x);
@@ -106,6 +110,10 @@ public:
     unsigned int get_r_yaw() const;
     void set_r_yaw(double yaw);
 
+    bool get_r_open() const;
+    void set_r_open();
+    void set_r_closed();
+
     bool operator==(const hand_discrete &rhs) const;
 
     bool operator!=(const hand_discrete &rhs) const;
@@ -119,9 +127,9 @@ private:
     unsigned int current_keyframe;
     std::vector<hand_discrete> keyframes;
 public:
-    char* name;
+    const char* name;
     unsigned int timeout;
-    explicit gesture(char *name, unsigned int timeout);
+    explicit gesture(const char *name, unsigned int timeout);
     void add_keyframe(hand_discrete handDiscrete);
     /* Returns true when the gesture is detected */
     bool test(hand_discrete *handDiscrete);

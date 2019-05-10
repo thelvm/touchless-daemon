@@ -10,12 +10,12 @@
 
 class gesture_parser
 {
-    std::vector<gesture> gestures;
+    std::vector<gesture*> gestures;
 
 public:
-    void add_gesture(const gesture& new_gesture);
+    void add_gesture(gesture *new_gesture);
     static hand_discrete * parse_static(const Leap::Frame &frame);
-    char * parse(const Leap::Frame &frame);
+    const char * parse(const Leap::Frame &frame);
 };
 
 #endif // GESTURE_PARSER_H_INCLUDED
