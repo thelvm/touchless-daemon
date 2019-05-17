@@ -1,4 +1,4 @@
-#include "gesture_parser.h"
+#include "../include/gesture_parser.h"
 #include <stdlib.h>
 #include <math.h>
 

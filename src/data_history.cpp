@@ -2,7 +2,7 @@
 // Created by lucas on 09/05/19.
 //
 
-#include "data_history.h"
+#include "../include/data_history.h"
 
 template <class T>
 data_history<T>::data_history()
