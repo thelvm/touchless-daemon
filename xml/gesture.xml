@@ -1,0 +1,10 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+        "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<node>
+    <interface name="com.thelvm.gesture_parser">
+        <signal name="changed">
+            <arg name="gesture_name" type="s"/>
+        </signal>
+    </interface>
+</node>

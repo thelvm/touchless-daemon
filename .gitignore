@@ -13,4 +13,6 @@ build/
 .idea/
 .vscode/
 cmake-build-debug/
+src/*codegen*
+include/*codegen*
 
