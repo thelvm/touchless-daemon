@@ -8,6 +8,7 @@ SET(SOURCES
         src/gesture_visualizer.cpp
         src/gestures.cpp
         src/data_history.cpp
+        src/g_bus_helper.cpp
         )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -18,6 +19,7 @@ SET(BINDIR "${PREFIX}/bin")
 SET(LIBDIR "${PREFIX}/lib")
 SET(INCLUDEDIR "${PREFIX}/include")
 
+FIND_PACKAGE(Threads)
 SET(PKG_MODULES
         glib-2.0
         gio-unix-2.0
@@ -32,19 +34,21 @@ SET(CODEGEN_PREFIX
 
 SET(CODEGEN_COMMAND
         gdbus-codegen
-        --interface-prefix com.thelvm.gesture.
+        --interface-prefix com.thelvm.touchless.
         --generate-c-code ${CODEGEN_PREFIX}
         --c-generate-object-manager
-        --c-namespace gesture
+        --c-namespace touchless
         ${CMAKE_CURRENT_SOURCE_DIR}/xml/gesture.xml
         )
 
 ADD_CUSTOM_COMMAND(
+        COMMAND rm -f ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
+        COMMAND rm -f ${CMAKE_CURRENT_SOURCE_DIR}/include/${CODEGEN_PREFIX}.h
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include/${CODEGEN_PREFIX}.h
         COMMAND ${CODEGEN_COMMAND}
-        COMMAND mv ${CODEGEN_PREFIX}.c ${CMAKE_CURRENT_SOURCE_DIR}/src/
-        COMMAND mv ${CODEGEN_PREFIX}.h ${CMAKE_CURRENT_SOURCE_DIR}/include/
+        COMMAND mv -f ${CODEGEN_PREFIX}.c ${CMAKE_CURRENT_SOURCE_DIR}/src/
+        COMMAND mv -f ${CODEGEN_PREFIX}.h ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )
 
 SET(SOURCES
@@ -54,8 +58,7 @@ SET(SOURCES
 
 ADD_EXECUTABLE(gesture-parser ${SOURCES})
 
-TARGET_LINK_LIBRARIES(gesture-parser libLeap.so)
-TARGET_LINK_LIBRARIES(gesture-parser ${PKGS_LIBRARIES})
+TARGET_LINK_LIBRARIES(gesture-parser libLeap.so ${CMAKE_THREAD_LIBS_INIT} ${PKGS_LIBRARIES})
 TARGET_INCLUDE_DIRECTORIES(gesture-parser PUBLIC ${PKGS_INCLUDE_DIRS})
 TARGET_COMPILE_OPTIONS(gesture-parser PUBLIC ${PKGS_CFLAGS_OTHERS})
 

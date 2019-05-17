@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
 #include <bitset>
+#include <thread>
 #include "Leap.h"
 #include "gesture_parser.h"
 #include "gesture_visualizer.h"
+#include "g_bus_helper.h"
 
 gesture_parser* g_parser;
 gesture_visualizer* g_vis;
@@ -26,6 +28,13 @@ void SampleListener::onFrame(const Leap::Controller& controller) {
     }
 }
 
+static void on_handle_hello_world(touchlessGesture *interface, GDBusMethodInvocation *invocation,
+const gchar *greeting, gpointer user_data) {
+
+}
+
+
+
 int main(int argc, char** argv)
 {
     SampleListener listener;
@@ -34,6 +43,7 @@ int main(int argc, char** argv)
     g_parser = new gesture_parser();
     g_vis = new gesture_visualizer();
 
+    std::cout << "declaring gestures" << std::endl;
     hand_discrete hd_both_flat;
     hd_both_flat.set_l_hand_present(true);
     hd_both_flat.set_r_hand_present(true);
@@ -57,8 +67,11 @@ int main(int argc, char** argv)
     g_parser->add_gesture(g_flip_down);
     g_parser->add_gesture(g_flip_up);
 
-    std::cout << "Connecting to Leap Sensor..." << std::endl;
+    std::cout << "Connecting to dbus..." << std::endl;
+    auto * helper = new g_bus_helper();
+    helper->connect();
 
+    std::cout << "Connecting to Leap Sensor..." << std::endl;
     controller.addListener(listener);
 
     std::cout << "Press Enter to quit" << std::endl;
