@@ -16,6 +16,7 @@ private:
     static void on_name_acquired(GDBusConnection *connection, const gchar *name, gpointer user_data);
 
 public:
+    static touchlessGesture *interface;
     g_bus_helper();
     ~g_bus_helper();
     void connect();

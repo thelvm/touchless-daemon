@@ -4,8 +4,7 @@
 <node>
     <interface name="com.thelvm.touchless.gesture">
         <signal name="changed">
-            <arg name="gesture_name" type="s"/>
+            <arg type="s" direction="out" name="gesture"/>
         </signal>
-        <property name="gesture_name" type="s" access="read" />
     </interface>
 </node>

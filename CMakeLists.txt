@@ -1,14 +1,15 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 PROJECT(gesture-parser VERSION 0.1.0)
 
-SET(SOURCES
-        src/main.cpp
+SET(PARSER_SOURCES
+        src/parser_main.cpp
         src/Leap.i
         src/gesture_parser.cpp
         src/gesture_visualizer.cpp
         src/gestures.cpp
         src/data_history.cpp
         src/g_bus_helper.cpp
+        src/custom_listener.cpp
         )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -49,19 +50,26 @@ ADD_CUSTOM_COMMAND(
         COMMAND ${CODEGEN_COMMAND}
         COMMAND mv -f ${CODEGEN_PREFIX}.c ${CMAKE_CURRENT_SOURCE_DIR}/src/
         COMMAND mv -f ${CODEGEN_PREFIX}.h ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    )
+)
 
-SET(SOURCES
-        ${SOURCES}
+SET(PARSER_SOURCES
+        ${PARSER_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
-    )
+        )
 
-ADD_EXECUTABLE(gesture-parser ${SOURCES})
+ADD_EXECUTABLE(gesture-parser ${PARSER_SOURCES})
 
 TARGET_LINK_LIBRARIES(gesture-parser libLeap.so ${CMAKE_THREAD_LIBS_INIT} ${PKGS_LIBRARIES})
 TARGET_INCLUDE_DIRECTORIES(gesture-parser PUBLIC ${PKGS_INCLUDE_DIRS})
 TARGET_COMPILE_OPTIONS(gesture-parser PUBLIC ${PKGS_CFLAGS_OTHERS})
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+SET(VIEWER_SOURCES
+        src/viewer_main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
+        )
+
+ADD_EXECUTABLE(gesture-viewer ${VIEWER_SOURCES})
+TARGET_LINK_LIBRARIES(gesture-viewer libLeap.so ${CMAKE_THREAD_LIBS_INIT} ${PKGS_LIBRARIES})
+TARGET_INCLUDE_DIRECTORIES(gesture-viewer PUBLIC ${PKGS_INCLUDE_DIRS})
+TARGET_COMPILE_OPTIONS(gesture-viewer PUBLIC ${PKGS_CFLAGS_OTHERS})
+
