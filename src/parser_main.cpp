@@ -1,39 +1,22 @@
 #include <iostream>
 #include <string>
 #include <bitset>
+#include <thread>
+#include <custom_listener.h>
 #include "Leap.h"
 #include "gesture_parser.h"
 #include "gesture_visualizer.h"
+#include "g_bus_helper.h"
 
-gesture_parser* g_parser;
-gesture_visualizer* g_vis;
-
-class SampleListener : public Leap::Listener {
-public:
-    void onConnect(const Leap::Controller&) override;
-    void onFrame(const Leap::Controller&) override;
-};
-
-void SampleListener::onConnect(const Leap::Controller& controller) {
-    std::cout << "Connected" << std::endl;
-}
-
-void SampleListener::onFrame(const Leap::Controller& controller) {
-    const Leap::Frame frame = controller.frame();
-    const char* g = g_parser->parse(frame);
-    if(g != nullptr) {
-        std::cout << g << std::endl;
-    }
-}
 
 int main(int argc, char** argv)
 {
-    SampleListener listener;
-    Leap::Controller controller;
+    std::cout << "Press Enter to quit" << std::endl;
+    
+    auto * parser = new gesture_parser();
+    auto * g_vis = new gesture_visualizer();
 
-    g_parser = new gesture_parser();
-    g_vis = new gesture_visualizer();
-
+    std::cout << "Loading gestures..." << std::endl;
     hand_discrete hd_both_flat;
     hd_both_flat.set_l_hand_present(true);
     hd_both_flat.set_r_hand_present(true);
@@ -54,16 +37,20 @@ int main(int argc, char** argv)
     g_flip_down->add_keyframe(hd_both_flat_ud);
     g_flip_down->add_keyframe(hd_both_flat);
 
-    g_parser->add_gesture(g_flip_down);
-    g_parser->add_gesture(g_flip_up);
+    parser->add_gesture(g_flip_down);
+    parser->add_gesture(g_flip_up);
+
+    std::cout << "Connecting to DBus..." << std::endl;
+    g_bus_helper helper;
+    helper.connect();
 
     std::cout << "Connecting to Leap Sensor..." << std::endl;
-
+    custom_listener listener(parser, g_bus_helper::interface);
+    Leap::Controller controller;
     controller.addListener(listener);
 
-    std::cout << "Press Enter to quit" << std::endl;
     std::cin.get();
-
+    
     controller.removeListener(listener);
 
     return 0;
