@@ -1,7 +1,6 @@
 #include <math.h>
 #include <cstdio>
 #include "gestures.h"
-#include "gesture_visualizer.h"
 
 hand_discrete::hand_discrete()
 {
@@ -254,9 +253,6 @@ bool gesture::test(hand_discrete *handDiscrete) {
         printf("%s has no keyframes!", name);
         return false;
     }
-    /*gesture_visualizer::show_static(handDiscrete);
-    gesture_visualizer::show_static(&keyframes[current_keyframe]);
-    printf("\n");*/
     if(*handDiscrete == keyframes[current_keyframe]) {
         current_keyframe++;
         nbr_tests = 0;

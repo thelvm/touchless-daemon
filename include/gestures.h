@@ -7,6 +7,7 @@ constexpr unsigned int  bits_per_hand_present = 1,
                         bits_per_finger       = 1,
                         bits_per_axis         = 3;
 
+/// Hand position information as a bitfield
 struct hand_bitfield
 {
     bool operator==(const hand_bitfield &rhs) const;
@@ -34,6 +35,7 @@ struct hand_bitfield
     unsigned int r_yaw          : bits_per_axis;
 };
 
+/// Interface with the hand bitfield for ease of use
 class hand_discrete
 {
 private:
@@ -120,6 +122,9 @@ public:
 
 };
 
+/// Class allowing to define custom gestures.
+/// Gestures have 1 or more keyframes. Keyframes currently have no time information. They are tested as soon as the
+/// previous on has been succesfully detected
 class gesture
 {
 private:
@@ -127,11 +132,20 @@ private:
     unsigned int current_keyframe;
     std::vector<hand_discrete> keyframes;
 public:
+    /// The name of the gesture. Also doubles as UUID
     const char* name;
+
+    ///After how many failed tested frames should the gesture reset it's current keyframe
     unsigned int timeout;
+
+
     explicit gesture(const char *name, unsigned int timeout);
+
+    /// Adds a keyframe to the list of keyframes
+    /// Keyframes are tested in the order they are added
     void add_keyframe(hand_discrete handDiscrete);
-    /* Returns true when the gesture is detected */
+
+    /// Returns true if the gesture is completed. False otherwise
     bool test(hand_discrete *handDiscrete);
 };
 

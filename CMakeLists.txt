@@ -5,9 +5,7 @@ SET(PARSER_SOURCES
         src/parser_main.cpp
         src/Leap.i
         src/gesture_parser.cpp
-        src/gesture_visualizer.cpp
         src/gestures.cpp
-        src/data_history.cpp
         src/g_bus_helper.cpp
         src/custom_listener.cpp
         )
