@@ -1,22 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
-PROJECT(gesture-parser VERSION 0.1.0)
-
-SET(PARSER_SOURCES
-        src/parser_main.cpp
-        src/Leap.i
-        src/gesture_parser.cpp
-        src/gestures.cpp
-        src/g_bus_helper.cpp
-        src/custom_listener.cpp
-        )
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-SET(PREFIX ${CMAKE_INSTALL_PREFIX})
-SET(PACKAGE ${PROJECT_NAME})
-SET(BINDIR "${PREFIX}/bin")
-SET(LIBDIR "${PREFIX}/lib")
-SET(INCLUDEDIR "${PREFIX}/include")
+PROJECT(touchless-daemon)
 
 FIND_PACKAGE(Threads)
 SET(PKG_MODULES
@@ -27,36 +10,32 @@ SET(PKG_MODULES
 FIND_PACKAGE(PkgConfig REQUIRED)
 pkg_check_modules(PKGS REQUIRED ${PKG_MODULES})
 
-SET(CODEGEN_PREFIX
-        gesture_gdbus_codegen
+SET(LEAP_SDK_DIR /home/lucas/leapSDK/2.3.1)
+SET(TOUCHLESS_API_DIR /home/lucas/Documents/software_project/Code/touchless-api)
+
+SET(SOURCES
+        src/daemon.cpp
+        src/DaemonGestureParserListener.cpp
         )
 
-SET(CODEGEN_COMMAND
-        gdbus-codegen
-        --interface-prefix com.thelvm.touchless.
-        --generate-c-code ${CODEGEN_PREFIX}
-        --c-generate-object-manager
-        --c-namespace touchless
-        ${CMAKE_CURRENT_SOURCE_DIR}/xml/gesture.xml
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+
+ADD_EXECUTABLE(daemon ${SOURCES})
+
+TARGET_LINK_LIBRARIES(daemon
+        ${TOUCHLESS_API_DIR}/lib/libtouchless.a
+        ${LEAP_SDK_DIR}/lib/x64/libLeap.so
+        ${CMAKE_THREAD_LIBS_INIT}
+        ${PKGS_LIBRARIES}
         )
 
-ADD_CUSTOM_COMMAND(
-        COMMAND rm -f ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
-        COMMAND rm -f ${CMAKE_CURRENT_SOURCE_DIR}/include/${CODEGEN_PREFIX}.h
-        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
-        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include/${CODEGEN_PREFIX}.h
-        COMMAND ${CODEGEN_COMMAND}
-        COMMAND mv -f ${CODEGEN_PREFIX}.c ${CMAKE_CURRENT_SOURCE_DIR}/src/
-        COMMAND mv -f ${CODEGEN_PREFIX}.h ${CMAKE_CURRENT_SOURCE_DIR}/include/
-)
-
-SET(PARSER_SOURCES
-        ${PARSER_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/${CODEGEN_PREFIX}.c
+TARGET_INCLUDE_DIRECTORIES(daemon PUBLIC
+        "${LEAP_SDK_DIR}/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${TOUCHLESS_API_DIR}/dbus"
+        "${TOUCHLESS_API_DIR}/include"
+        "${PKGS_INCLUDE_DIRS}"
         )
 
-ADD_EXECUTABLE(gesture-parser ${PARSER_SOURCES})
-
-TARGET_LINK_LIBRARIES(gesture-parser libLeap.so ${CMAKE_THREAD_LIBS_INIT} ${PKGS_LIBRARIES})
-TARGET_INCLUDE_DIRECTORIES(gesture-parser PUBLIC ${PKGS_INCLUDE_DIRS})
-TARGET_COMPILE_OPTIONS(gesture-parser PUBLIC ${PKGS_CFLAGS_OTHERS})
+TARGET_COMPILE_OPTIONS(daemon PUBLIC ${PKGS_CFLAGS_OTHERS})
