@@ -15,7 +15,7 @@ SET(TOUCHLESS_API_DIR /home/lucas/Documents/software_project/Code/touchless-api)
 
 SET(SOURCES
         src/daemon.cpp
-        src/DaemonGestureParserListener.cpp
+        src/TouchlessDaemonListener.cpp
         )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)

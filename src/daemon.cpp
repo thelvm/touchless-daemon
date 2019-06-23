@@ -5,16 +5,18 @@
 #include <iostream>
 
 #include "touchless.hpp"
-#include "DaemonGestureParserListener.hpp"
+#include "TouchlessDaemonListener.hpp"
 
 int main(int argc, char** argv)
 {
     std::cout << "Starting daemon...\n";
 
     auto gestureParser = new touchless::GestureParser();
-    auto gestureListener = new DaemonGestureParserListener();
+    auto listener = new TouchlessDaemonListener();
+    auto dbusInterface = new touchless::DbusInterface();
 
-    gestureParser->setListener(gestureListener);
+    gestureParser->setListener(listener);
+    dbusInterface->setDaemonModeListener(listener);
 
     if (!touchless::isLeapDaemonRunning())
     {
