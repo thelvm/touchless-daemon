@@ -10,8 +10,8 @@ SET(PKG_MODULES
 FIND_PACKAGE(PkgConfig REQUIRED)
 pkg_check_modules(PKGS REQUIRED ${PKG_MODULES})
 
-SET(LEAP_SDK_DIR /home/lucas/leapSDK/2.3.1)
-SET(TOUCHLESS_API_DIR /home/lucas/Documents/software_project/Code/touchless-api)
+SET(LEAP_SDK_DIR ~/leapSDK/2.3.1)
+SET(TOUCHLESS_API_DIR ~/Documents/software_project/Code/touchless-api)
 
 SET(SOURCES
         src/daemon.cpp
